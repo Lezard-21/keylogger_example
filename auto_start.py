@@ -145,36 +145,19 @@
 #
 # if __name__ == "__main__":
 #     main()
-import os
 from pathlib import Path
+import os
 import win32com.client
 
 
 def add_to_startup(exe_path):
-    # Startup folder
     startup = Path(os.getenv("APPDATA")) / \
         r"Microsoft\Windows\Start Menu\Programs\Startup"
-
-    if not Path(exe_path).exists():
-        print("No existe el ejecutable.")
-        return
-
+    startup.mkdir(parents=True, exist_ok=True)
     shortcut_path = startup / "SystemService.lnk"
-
     shell = win32com.client.Dispatch("WScript.Shell")
     shortcut = shell.CreateShortcut(str(shortcut_path))
-    shortcut.TargetPath = str(exe_path)
+    shortcut.TargetPath = exe_path
     shortcut.WorkingDirectory = str(Path(exe_path).parent)
     shortcut.Description = "System Service"
     shortcut.Save()
-
-    print(f"Shortcut creado correctamente en:\n{shortcut_path}")
-
-
-if __name__ == "__main__":
-    import sys
-    if len(sys.argv) != 2:
-        print("Uso: python script.py <ruta_del_exe>")
-        sys.exit(1)
-
-    add_to_startup(sys.argv[1])
